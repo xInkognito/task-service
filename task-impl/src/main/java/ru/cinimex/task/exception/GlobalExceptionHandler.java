@@ -54,4 +54,28 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleAuthenticationException(Exception ex) {
         return createErrorResponse(HttpStatus.UNAUTHORIZED, "Ошибка аутентификации: пользователь не авторизован");
     }
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleTaskBusinessError(TaskNotFoundException ex) {
+        return createErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationException(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .findFirst()
+                .orElse("Ошибка валидации данных");
+
+        log.warn("Validation failed: {}", errorMessage);
+        return createErrorResponse(HttpStatus.BAD_REQUEST, "Ошибка валидации: " + errorMessage);
+    }
+
+    @ExceptionHandler(TaskBusinessException.class)
+    public ResponseEntity<Map<String, String>> handleTaskBusinessException(TaskBusinessException ex) {
+        log.warn("Бизнес-ошибка при работе с задачей: {}", ex.getMessage());
+        return createErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
 }

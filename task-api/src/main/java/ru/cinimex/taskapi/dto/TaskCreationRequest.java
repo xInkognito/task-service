@@ -3,6 +3,7 @@ package ru.cinimex.taskapi.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,7 @@ public class TaskCreationRequest {
     @Schema(description = "Описание задачи, может быть null", example = "Написать юнит-тесты для сервиса оркестрации задач")
     private String description;
 
-    @NotBlank
+    @NotNull
     @Future(message = "Дата уведомления должна быть в будущем")
     @Schema(description = "Время отправки уведомления", example = "2024-08-14T13:52:22")
     private OffsetDateTime notificateAt;

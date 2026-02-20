@@ -25,26 +25,31 @@ public class TaskControllerImpl implements TaskController {
 
     @Override
     public ResponseEntity<TaskCreatedResponse> createTask(TaskCreationRequest taskCreationRequest) {
-        return null;
+        TaskCreatedResponse response = taskService.createTask(taskCreationRequest);
+        return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<List<TaskResponse>> getTasks(String title, String status, OffsetDateTime notificateAtStart, OffsetDateTime notificateAtEnd) {
-        return null;
+        List<TaskResponse> tasks = taskService.getTasks(title, status, notificateAtStart, notificateAtEnd);
+        return ResponseEntity.ok(tasks);
     }
 
     @Override
     public ResponseEntity<TaskResponse> getTaskById(UUID id) {
-        return null;
+        TaskResponse response = taskService.getTaskById(id);
+        return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<Void> updateTask(UUID id, TaskCreationRequest taskUpdateRequest) {
-        return null;
+        taskService.updateTask(id, taskUpdateRequest);
+        return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<Void> deleteTask(UUID id) {
-        return null;
+        taskService.deleteTask(id);
+        return ResponseEntity.ok().build();
     }
 }
