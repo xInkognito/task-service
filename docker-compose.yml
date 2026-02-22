@@ -1,6 +1,4 @@
-version: '3.8'
 services:
-
   liquibase:
     build: ./task-db
     extra_hosts:
@@ -28,6 +26,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: task_schema
       SPRING_KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9094
+      SPRING_LIQUIBASE_ENABLED: "false"
     depends_on:
       liquibase:
         condition: service_completed_successfully

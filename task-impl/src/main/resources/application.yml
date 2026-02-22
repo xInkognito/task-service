@@ -19,9 +19,25 @@ spring:
       ddl-auto: validate
     show-sql: true
 
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 jwt:
   secret: "3MZ7BDeA3j4p9GXrHYFYNSKfMUs_yxjQPNx#JhFEjj#b7@7mBN#Ifatux4q0bbSMW345A_dRFu0tG3yqdrHCAKVupami2FIIpk3K"
 
 springdoc:
   show-login-endpoint: true
   show-pre-authorize: true
+
+app:
+  services:
+    user-url: "http://host.docker.internal:9000"
+  kafka:
+    notification-topic: "notification.message.in"
+  scheduling:
+    notification-cron: "0 * * * * *"
+    batch-size: 5
+  security:
+    technical-token: "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1RFQ0giXSwic3ViIjoidGVjaF91c2VyIiwiaWF0IjoxNzcxNzc3MjE2LCJleHAiOjI4NjU1MDI1NDl9.laf7Km60zvmftA3kB0Hxg04lnv8CTVO3X90Juzncv75EGMClpx8pjVGrl7kDVnwLbr2FcQXJT6Gn-CMsTR2Vbw"
