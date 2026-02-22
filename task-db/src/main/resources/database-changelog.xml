@@ -7,4 +7,7 @@
 
     <include file="db/changelog/2026-02-18_22-53__initial_task_table_creation.xml"
              relativeToChangelogFile="true"/>
+
+    <include file="db/changelog/2026-02-22_20-24__drop_unique_title.xml"
+             relativeToChangelogFile="true"/>
 </databaseChangeLog>
