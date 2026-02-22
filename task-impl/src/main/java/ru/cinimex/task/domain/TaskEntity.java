@@ -18,7 +18,7 @@ import java.util.UUID;
 public class TaskEntity {
 
     @Id
-    @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue
     private UUID id;
 
     @Column(name = "title", nullable = false)
