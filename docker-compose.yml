@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+
+  liquibase:
+    build: ./task-db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: >
+      bash -c "liquibase --url=jdbc:postgresql://host.docker.internal:54321/task_auth_db 
+      --username=user --password=password 
+      --changelog-file=db/database-changelog.xml 
+      execute-sql --sql='CREATE SCHEMA IF NOT EXISTS task_schema;' && 
+      liquibase --url=jdbc:postgresql://host.docker.internal:54321/task_auth_db 
+      --username=user --password=password 
+      --changelog-file=db/database-changelog.xml 
+      --default-schema-name=task_schema 
+      update"
+
+  app:
+    build: ./task-impl
+    ports:
+      - "9001:8070"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:54321/task_auth_db?currentSchema=task_schema
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: task_schema
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9094
+    depends_on:
+      liquibase:
+        condition: service_completed_successfully
