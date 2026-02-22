@@ -25,6 +25,6 @@ public class TaskCreationRequest {
 
     @NotNull
     @Future(message = "Дата уведомления должна быть в будущем")
-    @Schema(description = "Время отправки уведомления", example = "2024-08-14T13:52:22")
+    @Schema(description = "Время отправки уведомления", example = "2026-08-14T13:52:22Z")
     private OffsetDateTime notificateAt;
 }
