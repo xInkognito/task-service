@@ -1,18 +1,14 @@
 package ru.cinimex.task.mapper;
 
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.cinimex.task.domain.TaskEntity;
 import ru.cinimex.taskapi.dto.TaskCreationRequest;
 import ru.cinimex.taskapi.dto.TaskResponse;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public abstract class TaskMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -32,13 +28,13 @@ public abstract class TaskMapper {
     public abstract void updateEntityFromDto(TaskCreationRequest dto, @MappingTarget TaskEntity entity);
 
     @AfterMapping
-    protected void fillPersistentFields(@MappingTarget TaskEntity entity) {
-        entity.setId(UUID.randomUUID());
+    protected void postMappingSteps(TaskCreationRequest dto, @MappingTarget TaskEntity entity) {
         entity.setStatus("CREATED");
-        entity.setCreatedAt(OffsetDateTime.now());
-        entity.setUpdatedAt(OffsetDateTime.now());
 
-        // Извлекаем логин пользователя из SecurityContext (JWT)
+        OffsetDateTime now = OffsetDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
+
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         entity.setAssignee(login);
     }
