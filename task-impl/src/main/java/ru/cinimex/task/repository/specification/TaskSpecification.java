@@ -1,46 +1,48 @@
 package ru.cinimex.task.repository.specification;
 
+import jakarta.persistence.criteria.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import ru.cinimex.task.domain.TaskEntity;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+@Slf4j
 public class TaskSpecification {
 
     public static Specification<TaskEntity> filterTasks(
-            String title,
-            String status,
-            OffsetDateTime start,
-            OffsetDateTime end,
-            String assignee) {
+            String title, String status, OffsetDateTime start, OffsetDateTime end, String assignee) {
 
         return (root, query, cb) -> {
-            var predicates = cb.conjunction();
+            log.info("Filtering tasks: title={}, status={}, start={}, end={}, assignee={}",
+                    title, status, start, end, assignee);
 
-            // Фильтр по исполнителю
-            predicates.getExpressions().add(cb.equal(root.get("assignee"), assignee));
+            List<Predicate> predicates = new ArrayList<>();
 
-            // Фильтр по названию (поиск подстроки, без учета регистра)
+            predicates.add(cb.equal(root.get("assignee"), assignee));
+
             if (title != null && !title.isBlank()) {
-                predicates.getExpressions().add(
-                        cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%")
-                );
+                log.debug("Applying title filter: {}", title);
+                predicates.add(cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
             }
 
-            // Фильтр по статусу
             if (status != null && !status.isBlank()) {
-                predicates.getExpressions().add(cb.equal(root.get("status"), status));
+                log.debug("Applying status filter: {}", status);
+                predicates.add(cb.equal(root.get("status"), status));
             }
 
-            // Фильтр по диапазону дат
             if (start != null) {
-                predicates.getExpressions().add(cb.greaterThanOrEqualTo(root.get("notificateAt"), start));
+                log.debug("Applying start date filter: {}", start);
+                predicates.add(cb.greaterThanOrEqualTo(root.get("notificateAt"), start));
             }
             if (end != null) {
-                predicates.getExpressions().add(cb.lessThanOrEqualTo(root.get("notificateAt"), end));
+                log.debug("Applying end date filter: {}", end);
+                predicates.add(cb.lessThanOrEqualTo(root.get("notificateAt"), end));
             }
 
-            return predicates;
+            return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
 }
