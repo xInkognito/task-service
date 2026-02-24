@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cinimex.task.domain.TaskEntity;
-import ru.cinimex.task.event.NotificationEvent;
+import ru.cinimex.task.dto.TaskNotification;
 import ru.cinimex.task.feign.UserClient;
 import ru.cinimex.task.repository.TaskRepository;
 
@@ -23,7 +23,7 @@ public class NotificationScheduler {
 
     private final TaskRepository taskRepository;
     private final UserClient userClient;
-    private final KafkaTemplate<String, NotificationEvent> kafkaTemplate;
+    private final KafkaTemplate<String, TaskNotification> kafkaTemplate;
 
     @Value("${app.kafka.notification-topic}")
     private String topicName;
@@ -76,7 +76,7 @@ public class NotificationScheduler {
 
     private void sendToKafka(String email, TaskEntity task) {
         // Формируем объект сообщения
-        var message = new NotificationEvent(email, task.getTitle(), task.getDescription());
+        var message = new TaskNotification(email, "Уведомление о задаче: " + task.getTitle(), task.getDescription());
         kafkaTemplate.send(topicName, task.getId().toString(), message);
     }
 }

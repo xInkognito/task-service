@@ -11,7 +11,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
-import ru.cinimex.task.event.NotificationEvent;
+import ru.cinimex.task.dto.TaskNotification;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, NotificationEvent> producerFactory() {
+    public ProducerFactory<String, TaskNotification> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -44,7 +44,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, NotificationEvent> kafkaTemplate() {
+    public KafkaTemplate<String, TaskNotification> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }
