@@ -3,15 +3,20 @@ services:
     build: ./task-db
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      DB_URL: "${DB_URL}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_SCHEMA: "${DB_SCHEMA}"
     command: >
-      bash -c "liquibase --url=jdbc:postgresql://host.docker.internal:54321/task_auth_db 
-      --username=user --password=password 
+      bash -c "liquibase --url=${DB_URL} 
+      --username=${DB_USER} --password=${DB_PASSWORD} 
       --changelog-file=db/database-changelog.xml 
-      execute-sql --sql='CREATE SCHEMA IF NOT EXISTS task_schema;' && 
-      liquibase --url=jdbc:postgresql://host.docker.internal:54321/task_auth_db 
-      --username=user --password=password 
+      execute-sql --sql='CREATE SCHEMA IF NOT EXISTS ${DB_SCHEMA};' && 
+      liquibase --url=${DB_URL} 
+      --username=${DB_USER} --password=${DB_PASSWORD} 
       --changelog-file=db/database-changelog.xml 
-      --default-schema-name=task_schema 
+      --default-schema-name=${DB_SCHEMA} 
       update"
 
   app:
@@ -21,12 +26,15 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:54321/task_auth_db?currentSchema=task_schema
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
-      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: task_schema
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9094
+      SPRING_DATASOURCE_URL: "${DB_URL}?currentSchema=${DB_SCHEMA}"
+      SPRING_DATASOURCE_USERNAME: "${DB_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD}"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: "${DB_SCHEMA}"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "${KAFKA_SERVERS}"
       SPRING_LIQUIBASE_ENABLED: "false"
+      JWT_SECRET: "${JWT_SECRET}"
+      TECH_TOKEN: "${TECH_TOKEN}"
+      USER_SERVICE_URL: "${USER_SERVICE_URL}"
     depends_on:
       liquibase:
         condition: service_completed_successfully
