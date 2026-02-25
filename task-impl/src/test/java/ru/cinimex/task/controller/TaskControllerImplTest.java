@@ -15,10 +15,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.cinimex.task.config.KafkaConfig;
 import ru.cinimex.task.exception.TaskBusinessException;
 import ru.cinimex.task.exception.TaskNotFoundException;
 import ru.cinimex.task.repository.TaskRepository;
 import ru.cinimex.task.service.JwtService;
+import ru.cinimex.task.service.NotificationScheduler;
 import ru.cinimex.task.service.TaskService;
 import ru.cinimex.taskapi.dto.TaskCreatedResponse;
 import ru.cinimex.taskapi.dto.TaskCreationRequest;
@@ -51,6 +53,12 @@ class TaskControllerImplTest {
 
     @MockitoBean
     private TaskService taskService;
+
+    @MockitoBean
+    private NotificationScheduler notificationScheduler;
+
+    @MockitoBean
+    private KafkaConfig kafkaConfig;
 
     @MockitoBean
     private TaskRepository taskRepository;
