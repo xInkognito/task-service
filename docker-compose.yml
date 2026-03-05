@@ -1,5 +1,6 @@
+version: '3.8'
 services:
-  liquibase:
+  task-liquibase:
     build: ./task-db
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -8,18 +9,9 @@ services:
       DB_USER: "${DB_USER}"
       DB_PASSWORD: "${DB_PASSWORD}"
       DB_SCHEMA: "${DB_SCHEMA}"
-    command: >
-      bash -c "liquibase --url=${DB_URL} 
-      --username=${DB_USER} --password=${DB_PASSWORD} 
-      --changelog-file=db/database-changelog.xml 
-      execute-sql --sql='CREATE SCHEMA IF NOT EXISTS ${DB_SCHEMA};' && 
-      liquibase --url=${DB_URL} 
-      --username=${DB_USER} --password=${DB_PASSWORD} 
-      --changelog-file=db/database-changelog.xml 
-      --default-schema-name=${DB_SCHEMA} 
-      update"
+      SKIP_MIGRATION: "false"
 
-  app:
+  task-app:
     build: ./task-impl
     ports:
       - "9001:8070"
@@ -36,5 +28,5 @@ services:
       TECH_TOKEN: "${TECH_TOKEN}"
       USER_SERVICE_URL: "${USER_SERVICE_URL}"
     depends_on:
-      liquibase:
+      task-liquibase:
         condition: service_completed_successfully
