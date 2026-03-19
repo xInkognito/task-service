@@ -14,7 +14,7 @@ services:
   task-app:
     build: ./task-impl
     ports:
-      - "9001:8070"
+      - "9001:8080"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
