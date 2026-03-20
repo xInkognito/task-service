@@ -28,7 +28,7 @@ app:
   services:
     user-url: ${USER_SERVICE_URL:http://localhost:9000}
   kafka:
-    notification-topic: "notification.message.in"
+    topic: "notification.message.in"
   scheduling:
     notification-cron: ${NOTIFICATION_CRON:0 * * * * *}
     batch-size: ${NOTIFICATION_BATCH_SIZE:5}

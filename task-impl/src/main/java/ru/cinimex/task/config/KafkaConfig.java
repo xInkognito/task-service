@@ -19,7 +19,7 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-    @Value("${app.kafka.notification-topic}")
+    @Value("${app.kafka.topic}")
     private String topicName;
 
     @Bean
